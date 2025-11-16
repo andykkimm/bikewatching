@@ -31,3 +31,7 @@ body {
 #map svg circle {
   pointer-events: auto; /* allow hover so tooltips work */
 }
+
+#map svg circle {
+  pointer-events: auto !important;
+}
