@@ -35,3 +35,30 @@ body {
 #map svg circle {
   pointer-events: auto !important;
 }
+
+header {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+/* Push the label to the right side */
+#time-filter {
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;  /* so <time> and <em> are on their own lines */
+  align-items: flex-end;   /* right-align the text under the slider */
+}
+
+/* Make <time> and <em> appear on their own line */
+#time-filter time,
+#time-filter em {
+  display: block;
+}
+
+/* Style the (any time) text differently */
+#time-filter em {
+  font-style: italic;
+  opacity: 0.6;   /* lighter color-ish */
+  font-size: 0.9rem;
+}
