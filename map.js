@@ -172,6 +172,14 @@ map.on('load', async () => {
       .range([0, 25]); // default range; will change when filtering
 
     // -----------------------------
+    // Quantize scale for traffic flow (departures / totalTraffic)
+    // -----------------------------
+    const stationFlow = d3
+      .scaleQuantize()
+      .domain([0, 1])
+      .range([0, 0.5, 1]);
+
+    // -----------------------------
     // Create circles for stations (with key function)
     // -----------------------------
     const circles = svg
@@ -179,11 +187,14 @@ map.on('load', async () => {
       .data(stations, d => d.short_name) // key by station ID
       .enter()
       .append('circle')
-      .attr('fill', 'steelblue')
       .attr('stroke', 'white')
       .attr('stroke-width', 1)
       .attr('opacity', 0.6)
       .attr('r', d => radiusScale(d.totalTraffic))
+      .style('--departure-ratio', d => {
+        const ratio = d.totalTraffic === 0 ? 0 : d.departures / d.totalTraffic;
+        return stationFlow(ratio);
+      })
       .each(function (d) {
         d3.select(this)
           .append('title')
@@ -209,7 +220,7 @@ map.on('load', async () => {
     map.on('moveend', updatePositions);
 
     // -----------------------------
-    // Step 5.2: slider reactivity
+    // Step 5.2 & 5.3: slider reactivity + filtering
     // -----------------------------
     const timeSlider = document.getElementById('time-slider');
     const selectedTime = document.getElementById('selected-time');
@@ -228,11 +239,16 @@ map.on('load', async () => {
         ? radiusScale.range([0, 25])
         : radiusScale.range([3, 50]);
 
-      // Update circles' radii (reuse existing elements, keyed by short_name)
+      // Update circles' radii and departure ratio
       circles
         .data(filteredStations, d => d.short_name)
         .join('circle')
-        .attr('r', d => radiusScale(d.totalTraffic));
+        .attr('r', d => radiusScale(d.totalTraffic))
+        .style('--departure-ratio', d => {
+          const ratio =
+            d.totalTraffic === 0 ? 0 : d.departures / d.totalTraffic;
+          return stationFlow(ratio);
+        });
     }
 
     function updateTimeDisplay() {

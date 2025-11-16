@@ -62,3 +62,47 @@ header {
   opacity: 0.6;   /* lighter color-ish */
   font-size: 0.9rem;
 }
+
+circle {
+  --color-departures: steelblue;
+  --color-arrivals: darkorange;
+  --color: color-mix(
+    in oklch,
+    var(--color-departures) calc(100% * var(--departure-ratio)),
+    var(--color-arrivals)
+  );
+  fill: var(--color);
+}
+
+#map circle,
+.legend > div {
+  --color-departures: steelblue;
+  --color-arrivals: darkorange;
+  --color: color-mix(
+    in oklch,
+    var(--color-departures) calc(100% * var(--departure-ratio)),
+    var(--color-arrivals)
+  );
+}
+
+/* Circles use the mixed color as fill */
+#map circle {
+  fill: var(--color);
+}
+
+/* Legend layout + styling */
+.legend {
+  display: flex;
+  gap: 1px;              /* tiny gap between swatches */
+  margin-block: 0.5rem 1rem; /* vertical space around legend */
+  font-size: 0.85rem;
+}
+
+.legend > div {
+  flex: 1;
+  text-align: center;
+  padding: 0.35rem 0.5rem;
+  color: white;
+  font-weight: 600;
+  background-color: var(--color); /* use the same color as circles */
+}
